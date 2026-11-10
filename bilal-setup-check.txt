@@ -1,0 +1,3 @@
+Day 1 collaboration test
+Contributor: Bilal
+Purpose: Verify my GitHub repository access and commit workflow.dir
