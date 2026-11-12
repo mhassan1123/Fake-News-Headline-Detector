@@ -1,0 +1,1906 @@
+# Understanding AI Lab Project 19: Fake News Headline Detector
+# 1. First, what is our project?
+
+Imagine you have a younger brother who loves reading news on the internet.
+
+One day, he sees these headlines:
+
+Example A
+
+Scientists discover a new planet outside our solar system
+
+A headline that might be based on a real news report.
+
+Example B
+
+A giant chocolate river discovered flowing through Karachi
+
+An imaginary headline for our example.
+
+Your brother asks:
+
+"How can I know whether a headline is real or fake?"
+
+You cannot personally investigate every headline on the internet. There are millions of them!
+
+So, we decide to build a small computer program that has learned from examples of previously labelled news headlines.
+
+We give it a new headline, and it makes a prediction:
+
+## Our Fake News Headline Detector
+
+USER ENTERS A HEADLINE
+
+"A giant chocolate river discovered flowing through Karachi"
+
+AI analyses the words
+
+PREDICTION
+
+# Likely Fake
+
+The model's prediction based on patterns learned from the dataset.
+
+Why did it predict this?
+
+The system can show words that influenced its prediction, according to the trained model.
+
+That's the central idea!
+
+Our project is a computer program that learns patterns from labelled news headlines and uses those patterns to predict whether a new headline is likely real or likely fake.
+
+But our teacher does not only want us to make a program that gives an answer.
+
+The teacher wants us to demonstrate how the AI learns, how it makes decisions, how good those decisions are, and whether we understand the code.
+
+That's why the project has several parts.
+
+# 2. Understand the entire project through one analogy
+
+Imagine we are opening a news investigation school.
+
+We have two students (our team), a large collection of old newspaper headlines, two different teachers who teach the computer, and an examination to see which teacher teaches better.
+
+Our computer will go through something like this:
+
+## The journey of our project
+
+1. Collect old newspapers
+
+   We gather a dataset containing headlines already labelled as real or fake.
+2. Inspect the newspapers
+
+   We count words, examine headline lengths and look for patterns. This is EDA.
+3. Teach the computer to understand words
+
+   We turn words into numbers using TF-IDF.
+4. Give the computer two teachers
+
+   Naive Bayes and Logistic Regression learn from the same training examples.
+5. Test both teachers
+
+   We give them unseen headlines and compare their predictions.
+6. Ask why they made a prediction
+
+   We show the words that influenced their decisions.
+7. Organise headlines into groups
+
+   K-means finds groups of headlines that have similar word patterns.
+8. Build a small website
+
+   A user enters a headline and sees the prediction and other project information.
+9. Prepare our school project report and demonstration
+
+   We explain the design, experiments, results and code to our teacher.
+
+Now let's understand every step properly.
+
+# 3. First important thing: What is a dataset?
+
+[Paperboy Online Newspapers | US & World Newspapers](https://images.openai.com/static-rsc-4/bAc0JjEaTDxptk6iY-Di_cAZoDlUjFmA-NYXmeQebJVqGWVmbYgJYF1_pXd-1aIiYhQcfbPuT4gaU31PG-sssg06c2o4s51LXvdz159pbnAaw-4XqDwscECjfZBxFcUuvYzcV97Vqg072vRGVumSaPzQ9DVPUvHaKcyXtYc8UQ4?purpose=inline)
+
+[poochi.ai](https://poochi.ai/?utm_source=chatgpt.com)
+
+Imagine I give you a notebook containing 10,000 old news headlines.
+
+Each headline has an answer written next to it:
+
+| Headline                                  | Label |
+| ----------------------------------------- | ----- |
+| Scientists discover a new planet          | Real  |
+| Chocolate river discovered in Karachi     | Fake  |
+| Government announces new education policy | Real  |
+| Aliens open a restaurant on the moon      | Fake  |
+
+This notebook is our dataset.
+
+Simplest definition: A dataset is a collection of information that a computer uses to learn or analyse something.
+
+In our project:
+
+- Each row contains a news example.
+- One column contains the headline.
+- Another column contains its label (Real or Fake).
+
+### What is a label?
+
+A label is simply the correct category or answer attached to an example.
+
+For example:
+
+- Headline: "Scientists discover a new planet."
+- Label: Real.
+
+Think of a school exercise where the teacher writes the correct answer beside every question. Those answers are labels.
+
+### Why do we need a dataset?
+
+Because our computer does not automatically know what fake news looks like.
+
+We need to show it many examples so it can learn patterns.
+
+Important: The computer learns from the labels and the patterns in our chosen dataset. It does not automatically know the actual truth about every news event.
+
+This is why our result says Likely Real or Likely Fake, not 100% True or 100% False.
+
+# 4. EDA — Exploratory Data Analysis
+
+This sounds complicated, but the idea is extremely simple.
+
+Imagine your teacher gives you a box containing 1,000 newspapers.
+
+Before reading all of them, you start asking:
+
+- How many newspapers are there?
+- Which newspaper has the longest headline?
+- Which words appear most often?
+- Are there missing headlines?
+- Are some newspapers repeated?
+
+You are exploring the collection to understand what is inside.
+
+That is EDA.
+
+Simplest definition: EDA means examining and summarising data to understand it before building the AI model.
+
+EDA stands for Exploratory Data Analysis.
+
+### What exactly will we explore?
+
+Our Project 19 guidelines specifically mention three things:
+
+A. Headline length
+
+Some headlines are short:
+
+\- "Heavy rain hits Lahore."
+
+Some are long:
+
+\- "Heavy rainfall causes major traffic problems across several areas of Lahore."
+
+We can calculate how many words each headline contains.
+
+Why?
+
+To understand the structure of our data.
+
+B. Common words
+
+Suppose we have 5,000 headlines.
+
+We might discover that words such as:
+
+- Government
+- President
+- Election
+- Pakistan
+- Report
+
+appear very frequently.
+
+We can count these words and show the most common ones in a chart.
+
+Why?
+
+To understand what our headlines generally discuss.
+
+C. News sources
+
+If the dataset contains a source column, we can examine which sources appear most frequently.
+
+For example, we might find that one source contributes 2,000 headlines while another contributes only 100.
+
+Why?
+
+To understand where our examples came from and identify possible imbalance or bias.
+
+If the dataset does not contain source information, we cannot honestly perform source analysis. We would need to select a suitable dataset or clearly document that limitation.
+
+### What is Pandas?
+
+Imagine you have an Excel sheet containing thousands of headlines.
+
+You want Python to:
+
+- Open the sheet.
+- Read its rows.
+- Count its values.
+- Find missing information.
+- Remove duplicate records.
+- Calculate averages.
+
+Pandas is a Python library that helps us work with table-shaped data.
+
+Think of it as Excel-like data handling inside Python.
+
+### Why do we need EDA?
+
+Imagine trying to cook food without checking whether your ingredients are rotten.
+
+Similarly, building an AI model without checking the dataset can create problems.
+
+EDA helps us discover:
+
+- Missing information.
+- Repeated examples.
+- Unbalanced labels.
+- Unusual data.
+- Patterns that might affect the model.
+
+What our teacher expects: Load the dataset with Pandas, clean missing values and outliers where appropriate, group and summarise the data, and explain what we discovered.
+
+EDA is not the AI prediction itself. It is the process of understanding the information before and around the AI work.
+
+# 5. Text preprocessing — cleaning the headlines
+
+Imagine someone gives you this headline:
+
+`"  BREAKING!!! Government Announces New Policy!!!  "`
+
+Before teaching a child to read it, you might remove unnecessary spaces and punctuation and make the text easier to handle.
+
+Computers also need text preparation.
+
+For example:
+
+Original:
+
+`"  BREAKING!!! Government Announces New Policy!!!  "`
+
+After basic cleaning:
+
+`"breaking government announces new policy"`
+
+This is called text preprocessing.
+
+Simplest definition: Text preprocessing means preparing written text so that a computer can work with it more easily.
+
+We may perform tasks such as:
+
+- Converting uppercase letters into lowercase.
+- Removing unnecessary spaces.
+- Handling punctuation.
+- Removing empty headlines.
+- Checking duplicate records.
+
+### Why do we need it?
+
+Imagine the same word appears in different forms:
+
+- NEWS
+- News
+- news
+
+A computer may initially treat them as different text forms.
+
+Converting them to lowercase makes them consistent.
+
+One important point: We should not blindly remove every word that looks unimportant. We must be careful not to remove information that helps the model understand a headline.
+
+# 6. TF-IDF — How does a computer understand words?
+
+[Model Input and Output Structure in Machine Learning | by Chandan Pal | Feb, 2026 | Medium](https://images.openai.com/static-rsc-4/QflgKqFq5T-yi8kCdhAgCT6z9dTm3FRC4ubJVYRqYSzEWLWLgxU3sal7SvR6muTxkvCU1jfHZgAu4TWFpta82Az1557gNiut9hLWBuZE60zpxKuhepcm4RTxtMYr5_b8L_iX0Cpa3QGkFcDEhcW-gLfZ5ZgW39zFOnRIeeK291s?purpose=inline)
+
+[medium.com](https://medium.com/%40techie_chandan/model-input-and-output-structure-in-machine-learning-explained-df4a12b81931?utm_source=chatgpt.com)
+
+This is one of the most important ideas in our project.
+
+Imagine I tell you:
+
+"Ali is a very good student."
+
+You understand the sentence because you know English.
+
+But a computer model cannot directly understand words in the same way a human does. We need to represent the words using numbers.
+
+Let's use a simple example.
+
+Suppose we have three headlines:
+
+1. Government announces new policy.
+2. Government announces new school.
+3. Scientists discover new planet.
+
+We can create a table showing whether a word appears in each headline.
+
+| Headline | Government | Announces | New | School | Scientists | Planet |
+| -------- | ---------- | --------- | --- | ------ | ---------- | ------ |
+| 1        | 1          | 1         | 1   | 0      | 0          | 0      |
+| 2        | 1          | 1         | 1   | 1      | 0          | 0      |
+| 3        | 0          | 0         | 1   | 0      | 1          | 1      |
+
+Here:
+
+- `1` means the word is present.
+- `0` means the word is absent.
+
+Now the computer has a numerical representation of the headlines!
+
+But there is a problem.
+
+The word "new" appears in all three headlines. It may not help us distinguish one headline from another.
+
+We want to give more importance to words that are useful for distinguishing headlines.
+
+That is where TF-IDF comes in.
+
+### What does TF-IDF mean?
+
+TF-IDF stands for:
+
+- TF — Term Frequency: How often does a word appear in a particular document?
+- IDF — Inverse Document Frequency: How uncommon is that word across all documents?
+
+A document here simply means one headline.
+
+Simplest definition: TF-IDF gives numerical importance scores to words based on how often they appear in one headline and how uncommon they are across the whole collection.
+
+Let's use a simple analogy.
+
+Imagine a classroom of 30 students.
+
+Every student uses the word "school". It is a very common word.
+
+But only one student uses the word "astronaut".
+
+If you want to identify which student is talking about space, the word "astronaut" is more useful than "school".
+
+TF-IDF tries to give more importance to words that are more distinctive.
+
+### Why are we using TF-IDF?
+
+Because our AI models need numbers, not raw sentences.
+
+Our process becomes:
+
+Headline
+
+"Scientists discover a new planet"
+
+TF-IDF
+
+Words become numerical scores
+
+AI model
+
+Uses those numbers to make a prediction
+
+TF-IDF is not itself the fake-news detector. It is a tool that prepares the text for the detector.
+
+# 7. Training data and testing data — Why do we divide the dataset?
+
+Imagine you are preparing for a mathematics exam.
+
+Your teacher gives you 100 practice questions with answers.
+
+You study 80 questions.
+
+Then your teacher gives you 20 new questions that you have never seen before.
+
+Why?
+
+Because if you only answer questions you memorised, the teacher cannot know whether you actually learned mathematics.
+
+The same idea applies to our AI model.
+
+We divide our labelled dataset into two parts:
+
+## Example: 1,000 labelled headlines
+
+Training data
+
+### 800
+
+The model studies these examples and learns patterns.
+
+Testing data
+
+### 200
+
+The model is tested on these examples that it did not use for training.
+
+This is called a train/test split.
+
+Simplest definition: A train/test split divides the data into one part for learning and another part for checking how well the model learned.
+
+### Why do we need it?
+
+Suppose our model gets 100% accuracy on the headlines it studied.
+
+That does not mean it will correctly predict new headlines.
+
+It might simply have memorised the examples.
+
+Testing with unseen data helps us check whether it can recognise patterns beyond the examples it studied.
+
+### What is unseen data?
+
+Unseen data means examples that were not used to train the model.
+
+It does not mean the computer has never encountered any similar words. It means those particular test examples were kept separate from training.
+
+### One important rule: No cheating!
+
+Imagine a student secretly reads the answer key before the examination.
+
+The result will look excellent, but it is not a fair test.
+
+In machine learning, this problem is called data leakage.
+
+For example, if duplicate headlines appear in both training and testing sets, the model may appear more successful than it really is.
+
+We must also fit TF-IDF using training data only, then use that already-fitted TF-IDF transformation on the test data. Otherwise, information from the test set can leak into the training process.
+
+# 8. What is a machine-learning model?
+
+Imagine you teach a child using 1,000 examples.
+
+After seeing those examples, the child starts noticing patterns.
+
+For example:
+
+- Certain combinations of words appear frequently in fake-labelled headlines.
+- Other combinations appear frequently in real-labelled headlines.
+
+The child uses what they learned to make a guess about a new example.
+
+A machine-learning model works in a similar way.
+
+Simplest definition: A machine-learning model is a computer system that learns patterns from examples and uses those patterns to make predictions or decisions.
+
+In our project, we will train two different models.
+
+# 9. Model 1: Naive Bayes
+
+[Notes for SL 4.5—Trial and outcome - IB](https://images.openai.com/static-rsc-4/Blc0kcu_gIXFULeGw3eyxozw_nZvMZi36DJW1zPo4BlVdBgNfwbya4zzg5AlqDVcIrdu_ObHah5B1u9BYrSl3VJeF5pZvikouabTPIbPlonWrU_D2bpLJeOosZUhaIrJZvsg1806Mv5eu4D5hQmxh8ZP9rcAgtobN_QuLVgW9j8?purpose=inline)
+
+[revisiondojo.com](https://www.revisiondojo.com/ib/ib-math-ai/ai-sl-4-5-trial-and-outcome/notes?utm_source=chatgpt.com)
+
+Imagine you have a bag containing 100 coloured balls:
+
+- 60 red balls.
+- 40 blue balls.
+
+If you randomly pick one ball, which colour is more likely?
+
+Red!
+
+You used probability to make a prediction.
+
+Naive Bayes uses probability too.
+
+It examines the words in a headline and calculates how strongly they are associated with each label based on the training examples.
+
+For example, imagine our training dataset shows that a particular word or word combination appears more frequently in fake-labelled headlines.
+
+Naive Bayes uses that information to estimate whether the new headline is more likely to belong to the fake or real category.
+
+Simplest definition: Naive Bayes is a machine-learning model that uses probability to decide which category an example most likely belongs to.
+
+### Why are we using it?
+
+- It is suitable for many text-classification tasks.
+- It is relatively simple and fast.
+- It gives us a useful first model to compare with another model.
+
+### Why is it called "Naive"?
+
+It makes a simplifying assumption that the features (in our case, words) are independent of one another when calculating probabilities.
+
+In real language, words are related. For example, "New York" has a meaning that depends on the combination of both words.
+
+Naive Bayes simplifies this relationship to make its calculations manageable.
+
+That simplifying assumption is why it is called naive.
+
+# 10. Model 2: Logistic Regression
+
+[Danh sách bài viết - AIO Conquer Blog](https://images.openai.com/static-rsc-4/zvKFY7dJ4VTLLABo6o7zMKkwxDi0MHf5UH98kPg7vjDhSpt-CSrflUJ_iEFBn79i5iKjHL_bVfAcjJJ1kqlOLEGIrnnhPWgjAh8aXlGewxRGtpEspFUbaW_AqbbKyXNeSgBIO8N_YQWhpKx0yFT4UX2R7JQT5gS0to3Am2VKzVo?purpose=inline)
+
+[aioconquer.aivietnam.edu.vn](https://aioconquer.aivietnam.edu.vn/posts/?tag=aio2025\&utm_source=chatgpt.com)
+
+Now imagine another teacher who uses a different method.
+
+This teacher looks at the numerical features of a headline and calculates a score.
+
+Based on that score, the model estimates how likely the headline belongs to one category rather than the other.
+
+For example, imagine it calculates:
+
+- Fake: 0.85
+- Real: 0.15
+
+The model would choose Fake because its estimated probability is higher.
+
+These are just imaginary example numbers, not results from our project.
+
+Simplest definition: Logistic Regression is a machine-learning model that uses a mathematical calculation to estimate the probability of an example belonging to a category.
+
+### Why are we using it?
+
+Because we want to compare two different approaches to the same problem.
+
+Naive Bayes uses probability based on its word-feature assumptions.
+
+Logistic Regression learns weights for features and uses them to estimate the class probability.
+
+Both can work with TF-IDF numerical features.
+
+### Why not use only one model?
+
+Because our teacher wants us to demonstrate comparison.
+
+Imagine two teachers teaching the same students.
+
+We want to discover:
+
+- Which teacher performs better?
+- Which makes fewer mistakes?
+- Which detects fake headlines more effectively?
+- Are there situations where one is better than the other?
+
+That is why we train both.
+
+# 11. Two-model comparison — How do we decide which model is better?
+
+Imagine both models sit for the same examination.
+
+We give both exactly the same 200 unseen headlines.
+
+The actual labels are already known to us.
+
+Then we compare their answers.
+
+| Test example | Correct label | Naive Bayes | Logistic Regression |
+| ------------ | ------------- | ----------- | ------------------- |
+| 1            | Fake          | Fake        | Fake                |
+| 2            | Real          | Fake        | Real                |
+| 3            | Fake          | Fake        | Real                |
+| 4            | Real          | Real        | Real                |
+| 5            | Fake          | Real        | Fake                |
+
+In this imaginary example:
+
+- Naive Bayes gets 3 correct.
+- Logistic Regression gets 4 correct.
+
+Logistic Regression performs better on these five examples.
+
+But how do we compare hundreds or thousands of examples properly?
+
+We use evaluation metrics.
+
+# 12. Evaluation metrics — How do we measure the model's performance?
+
+Imagine you have two students who take a test with 100 questions.
+
+You don't just want to hear "I did well!"
+
+You want to see their actual marks and mistakes.
+
+Our AI models also need a proper examination.
+
+There are four important measurements.
+
+## A. Accuracy
+
+Simplest definition: Accuracy tells us what percentage of all predictions were correct.
+
+Imagine the model examines 100 headlines:
+
+- 90 predictions are correct.
+- 10 predictions are incorrect.
+
+Its accuracy is 90%.
+
+\\[ Accuracy=\frac{\text{Correct predictions}}{\text{Total predictions}} \\]
+
+Why do we need it?
+
+It gives us a simple overall picture of how often the model gets the answer right.
+
+But accuracy alone can be misleading.
+
+Imagine 100 headlines:
+
+- 90 are real.
+- 10 are fake.
+
+A model that always predicts Real gets 90% accuracy!
+
+But it detects absolutely none of the fake headlines.
+
+That is why we need more measurements.
+
+## B. Precision
+
+Imagine the model points to 20 headlines and says:
+
+"These 20 headlines are fake."
+
+After checking the correct answers, we discover:
+
+- 15 really are fake.
+- 5 are actually real.
+
+Precision tells us how many of the headlines predicted as fake were actually fake.
+
+\\[ Precision=\frac{TP}{TP+FP} \\]
+
+Here, for our example:
+
+\\[ Precision=\frac{15}{20}=75\\% \\]
+
+Simplest definition: Precision tells us how often the model is correct when it predicts a particular category.
+
+For our project, we will define Fake as the positive category when calculating fake-class precision.
+
+## C. Recall
+
+Now imagine there are 30 actually fake headlines in the examination.
+
+Our model correctly detects 15 of them.
+
+But it misses the other 15.
+
+Recall tells us how many of the actual fake headlines the model successfully found.
+
+\\[ Recall=\frac{TP}{TP+FN} \\]
+
+In this example:
+
+\\[ Recall=\frac{15}{30}=50\\% \\]
+
+Simplest definition: Recall tells us how many of the actual examples in a category the model successfully detects.
+
+Why do we need it?
+
+A model might have high precision but miss many fake headlines. Recall helps us see that problem.
+
+## D. F1-score
+
+Imagine one model has:
+
+- High precision.
+- Low recall.
+
+Another model has:
+
+- Low precision.
+- High recall.
+
+Which one is better?
+
+We need a measurement that considers both.
+
+That is the F1-score.
+
+Simplest definition: F1-score combines precision and recall into one measurement.
+
+\\[ F1=2\times\frac{Precision\times Recall}{Precision+Recall} \\]
+
+It is useful when we want to understand the balance between finding fake headlines and avoiding incorrect fake predictions.
+
+Remember the difference
+
+| Metric    | The question it answers                             |
+| --------- | --------------------------------------------------- |
+| Accuracy  | How many predictions were correct overall?          |
+| Precision | When the model says Fake, how often is it right?    |
+| Recall    | Of all actual Fake headlines, how many did it find? |
+| F1-score  | How well does it balance precision and recall?      |
+
+These are not four different AI models. They are four different ways to measure the performance of our models.
+
+# 13. Confusion matrix — A table of correct and incorrect answers
+
+[📊 Confusion Matrix Explained (With Python Code & Metrics) | by Soumodeep Santra | Dec, 2025 | Medium](https://images.openai.com/static-rsc-4/xpkaNIzcwRUhd-zBzRfMTywCaCThC8r2-5WDfdG2nC35_h58QSYoD6Wh4IP8cTMcJzOqyrGT8dCN8R1iYpCESXePAGNxajJX-VSyI3Jv4lGhrYNRUTY6_je7QSqKZP0cd1nZvBR-j-1Uu02DNQOtTdvDNhce4xC5gP7QyHcCoYg?purpose=inline)
+
+[medium.com](https://medium.com/%40soumodeepsantra5/confusion-matrix-explained-with-python-code-metrics-f4d78337d3f5?utm_source=chatgpt.com)
+
+Imagine a teacher checking 100 examination answers.
+
+The teacher makes a table showing:
+
+- How many answers were correct?
+- How many were wrong?
+- What type of mistake happened?
+
+That table is called a confusion matrix.
+
+For our project, we have two categories:
+
+- Fake
+- Real
+
+Let's say our model examines 100 headlines.
+
+| Actual answer | Predicted Fake | Predicted Real |
+| ------------- | -------------- | -------------- |
+| Fake          | 30             | 10             |
+| Real          | 5              | 55             |
+
+Let's understand this:
+
+- 30: The headline was fake, and the model correctly predicted fake.
+- 10: The headline was fake, but the model incorrectly predicted real.
+- 5: The headline was real, but the model incorrectly predicted fake.
+- 55: The headline was real, and the model correctly predicted real.
+
+The two diagonal numbers represent correct predictions.
+
+The other two numbers represent mistakes.
+
+### Why do we need it?
+
+Accuracy might tell us that a model made 85% correct predictions.
+
+But the confusion matrix tells us what kind of mistakes it made.
+
+For a fake-news detector, this is important because falsely labelling real news as fake and failing to detect fake news are two different problems.
+
+We will generate confusion matrices for both Naive Bayes and Logistic Regression.
+
+# 14. Influential-word explanations — Why did the model make that prediction?
+
+This is one of the most interesting features of Project 19.
+
+Imagine your little brother asks:
+
+"Why did the computer say this headline is fake?"
+
+You shouldn't just reply:
+
+"Because the computer said so!"
+
+You should try to show which words influenced the decision.
+
+For example, imagine the headline:
+
+"Scientists discover an incredible secret that governments are hiding from everyone."
+
+Our model may give certain words stronger influence toward one category.
+
+We can display something like this:
+
+Example headline explanation
+
+Scientists discover an incredible secret that governments are hiding from everyone.
+
+Illustrative model explanation
+
+- "secret" — influenced prediction toward Fake.
+- "hiding" — influenced prediction toward Fake.
+- "scientists" — influenced prediction toward Real.
+
+These words and directions are imaginary examples. Our actual explanations must come from our trained model and dataset.
+
+Simplest definition: Influential-word explanation means showing which words contributed most to a model's prediction.
+
+### Why do we need it?
+
+Imagine two computers both predict Fake.
+
+- Computer A only gives the answer.
+- Computer B gives the answer and shows which words influenced its decision.
+
+Computer B is easier to investigate and understand.
+
+This makes our project more transparent.
+
+### How will we implement it?
+
+The two models can provide information about their learned word patterns:
+
+- Logistic Regression learns a weight for each word feature.
+- Naive Bayes learns how strongly word features are associated with each class.
+
+We can use those learned values to identify words pushing a prediction toward Fake or Real.
+
+One important detail: A word's influence depends on the model, the training data and the particular headline. We should not simply highlight words because they sound suspicious to a human.
+
+Also, this explanation does not prove that a headline is fake. It explains the model's reasoning pattern.
+
+# 15. K-means clustering — Grouping similar headlines
+
+[K-Means Clustering : What I Learned In Unsupervised Learning | by Aniket | Feb, 2026 | Medium](https://images.openai.com/static-rsc-4/3v1W6Q5JchPbzaluk6RuEm1ht_MJhFf2QohPRQCwbhuGGhMY28dTZkN9fwkAgjhqBs2DiVLz0yF9OAjbhRePcy982cQdxZwKNHEOTzRmdQvwh_1yjxiMz4oOtDpIxW1loQ8tKjVHp7Hn57rSy1yauK7QBLDOtOMhnBkHbob-Dpg?purpose=inline)
+
+[medium.com](https://medium.com/%40aniani2521/k-means-clustering-what-i-learned-in-unsupervised-learning-e83bfc3ce4bf?utm_source=chatgpt.com)
+
+This is another important part of our project, and it is different from the two classification models.
+
+Imagine I give you 100 photographs.
+
+I don't tell you which photograph contains:
+
+- Animals
+- Cars
+- Food
+- Buildings
+
+I simply ask you:
+
+"Can you organise these photographs into groups that look similar?"
+
+You might create:
+
+- Group 1: Animals.
+- Group 2: Cars.
+- Group 3: Food.
+- Group 4: Buildings.
+
+You organised them based on similarities without being given the correct group names.
+
+That is the basic idea behind clustering.
+
+### What is clustering?
+
+Simplest definition: Clustering means automatically grouping similar items together.
+
+### What is K-means?
+
+K-means is an algorithm that divides data into a chosen number of groups, called clusters, based on similarity.
+
+The letter K represents the number of groups we want.
+
+For example:
+
+- K = 2 means two groups.
+- K = 3 means three groups.
+- K = 4 means four groups.
+
+### Let's apply it to our headlines
+
+Imagine we have these six headlines:
+
+| Headline                                  | Possible topic |
+| ----------------------------------------- | -------------- |
+| Government announces new education policy | Education      |
+| Schools introduce new examination system  | Education      |
+| Cricket team wins international match     | Sports         |
+| Pakistan wins cricket tournament          | Sports         |
+| New smartphone released                   | Technology     |
+| Company launches new computer             | Technology     |
+
+We ask K-means to create three groups.
+
+It may discover:
+
+Cluster 1
+
+Education-related headlines
+
+- Government announces new education policy
+- Schools introduce new examination system
+
+Cluster 2
+
+Sports-related headlines
+
+- Cricket team wins international match
+- Pakistan wins cricket tournament
+
+Cluster 3
+
+Technology-related headlines
+
+- New smartphone released
+- Company launches new computer
+
+These are illustrative groups. Actual K-means clusters are not guaranteed to be so clean or meaningful.
+
+### What does "unlabelled headlines" mean?
+
+Remember our labelled dataset?
+
+| Headline                    | Label |
+| --------------------------- | ----- |
+| Government announces policy | Real  |
+| Aliens visit Karachi        | Fake  |
+
+For supervised learning, we use the labels Real and Fake.
+
+But for clustering, we can take headlines without their Real/Fake labels and ask the algorithm to group them according to their word patterns.
+
+Unlabelled means that the correct category is not provided to the algorithm for that task.
+
+### Why do we need K-means?
+
+Because our project should do more than predict Real or Fake.
+
+It should also explore what topics appear in the collection of headlines.
+
+For example:
+
+- What groups of topics are present?
+- Which words are common in each group?
+- Do similar headlines appear together?
+
+### How does K-means work?
+
+Imagine you want to organise 100 children into three groups based on their similarities.
+
+K-means follows a simple repeating process:
+
+1. Choose three starting group centres.
+2. Assign each headline to its nearest centre.
+3. Calculate a better centre for each group.
+4. Assign the headlines again.
+5. Repeat until the groups stop changing much.
+
+These group centres are called centroids.
+
+Simplest definition: A centroid is the centre point representing a cluster.
+
+### Why do we use TF-IDF again?
+
+Because K-means also needs numerical information.
+
+It cannot directly calculate the distance between two English sentences in the way it calculates distances between numbers.
+
+So:
+
+- TF-IDF turns headlines into numerical features.
+- K-means uses those features to group similar headlines.
+
+### Very important distinction
+
+Our two classification models answer:
+
+"Is this headline likely Real or Fake?"
+
+K-means answers:
+
+"Which other headlines have similar word patterns?"
+
+K-means does not decide whether a headline is real or fake.
+
+It is a separate, unsupervised learning task.
+
+# 16. Web interface — What is Streamlit?
+
+[Building a Fake News Classification app using Keras & Streamlit | by Anderson Ho Yong Kian | Medium](https://images.openai.com/static-rsc-4/Z2Vlu-2-j-lSNYyxU0-4Z46X1UEk3qzFQFYbC_AwDI5Kv7wruZEyLJloWv26XwyVkYXC2OuZZsJ4uWgk3WG1B29yKCS90RnBwyLZuguCd3P_hXsddllFMAYvOnXdD_xIsntdn8KEaHmI6BV1lvGCEUoHcJkbzZoXorBNGc58WMY?purpose=inline)
+
+[anderk687.medium.com](https://anderk687.medium.com/building-a-fake-news-classification-app-using-keras-streamlit-32f30afb71ad?utm_source=chatgpt.com)
+
+Imagine we build a working machine inside our computer.
+
+But to use it, someone has to open Python files, understand commands and run code.
+
+That is not convenient for an ordinary user.
+
+Instead, we build a simple webpage containing:
+
+- A box where someone can paste a headline.
+- A button to check it.
+- A prediction.
+- Influential words.
+- Some project charts and model information.
+
+For example:
+
+## Fake News Headline Detector
+
+Illustration of our planned application
+
+Enter a news headline
+
+Scientists discover a new planet outside our solar system.
+
+Check headline
+
+Prediction
+
+# Likely Real
+
+Illustrative result only — not an actual model prediction.
+
+Other sections
+
+- Influential words
+- Model performance comparison
+- Headline topic clusters
+- Dataset charts
+
+### What is Streamlit?
+
+Simplest definition: Streamlit is a Python library that helps us create simple interactive web applications without needing to build a website from scratch.
+
+### What does interactive mean?
+
+It means the user can do something and the application responds.
+
+For example:
+
+- Enter a headline.
+- Press a button.
+- See the prediction.
+
+### Why are we using Streamlit?
+
+Because Project 19 specifically expects a web box where a user can paste a headline and get a result.
+
+Streamlit helps us create that interface using Python.
+
+Remember: Streamlit is not the AI model. It is the window through which users interact with our AI model.
+
+# 17. OOP — Why does our project need classes and objects?
+
+Imagine you are building a school.
+
+You don't put every student, teacher, classroom, book and timetable into one giant box.
+
+You organise them into separate things:
+
+- A Student.
+- A Teacher.
+- A Classroom.
+- A School.
+
+Each thing has its own information and responsibilities.
+
+We organise our Python program in a similar way.
+
+### What is OOP?
+
+OOP stands for Object-Oriented Programming.
+
+Simplest definition: OOP is a way of organising a program into separate objects that contain information and perform tasks.
+
+### What is a class?
+
+Imagine you want to make 100 student identity cards.
+
+Instead of designing each card separately, you create one standard design.
+
+That standard design is like a class.
+
+Simplest definition: A class is a blueprint or design used to create objects.
+
+### What is an object?
+
+When you use that blueprint to create an actual student's identity card, that card is an object.
+
+Simplest definition: An object is an individual thing created from a class.
+
+For our project, imagine these classes:
+
+| Class                     | Responsibility                                        |
+| ------------------------- | ----------------------------------------------------- |
+| `HeadlineEnvironment`     | Manages the headline input and prediction environment |
+| `NaiveBayesAgent`         | Uses the Naive Bayes model                            |
+| `LogisticRegressionAgent` | Uses the Logistic Regression model                    |
+
+We can also have a shared parent class called `TextClassifier`.
+
+### What is inheritance?
+
+Imagine a father teaches his child some common skills.
+
+The child receives those skills and can also develop additional skills.
+
+In programming, inheritance lets one class receive attributes and methods from another class.
+
+For example:
+
+```
+          TextClassifier
+                |
+        -----------------
+        |               |
+  NaiveBayesAgent   LogisticRegressionAgent
+```
+
+Both child classes inherit common behaviour from `TextClassifier`.
+
+Why?
+
+Because both are text classifiers, even though they use different learning methods.
+
+### What is encapsulation?
+
+Imagine a school keeps students' private records inside a secure office.
+
+Not everyone can directly change those records.
+
+Encapsulation is similar.
+
+Simplest definition: Encapsulation means keeping an object's data and related operations together and controlling how its internal data is accessed or changed.
+
+For example, our model's internal settings and trained information can be kept inside the appropriate class rather than being changed randomly throughout the program.
+
+### What is method overriding?
+
+Imagine a father and child both know how to drive, but they drive different vehicles using different procedures.
+
+In programming, a child class can provide its own version of a method inherited from its parent class.
+
+This is called method overriding.
+
+For example:
+
+- The parent class defines a general `predict()` method.
+- `NaiveBayesAgent` provides its own implementation.
+- `LogisticRegressionAgent` provides its own implementation.
+
+Both methods have the same name but perform prediction using different models.
+
+### What exactly does our teacher require?
+
+Our teacher requires:
+
+1. At least three classes.
+2. Encapsulation.
+3. Inheritance.
+4. At least one overridden method.
+5. A meaningful object-oriented design.
+
+Why?
+
+Because the project is also testing whether we can organise a proper Python application, not merely write a few commands that happen to produce an answer.
+
+AI.txt
+
+# 18. PEAS — How do we describe our AI system?
+
+Imagine you hire a robot to work in a supermarket.
+
+Before building the robot, you need to answer four questions:
+
+1. What does the robot need to achieve?
+2. Where will it work?
+3. What actions can it perform?
+4. What information can it receive?
+
+These four questions are represented by PEAS.
+
+PEAS stands for:
+
+- P — Performance Measure
+- E — Environment
+- A — Actuators
+- S — Sensors
+
+Simplest definition: PEAS is a way to describe what an intelligent system must achieve, where it works, what it can do and what information it receives.
+
+Let's apply each part to our project.
+
+## P — Performance Measure
+
+Imagine your school asks you to score at least 80 marks in an examination.
+
+Your performance is measured by your marks.
+
+Our AI system also needs performance measurements.
+
+For example:
+
+- Accuracy.
+- Precision.
+- Recall.
+- F1-score.
+
+These measurements help us decide whether our detector is performing well.
+
+## E — Environment
+
+The environment is the place or situation in which the AI works.
+
+For our project, it includes:
+
+- The labelled headline dataset.
+- The new headline submitted by a user.
+- The computer environment in which the model runs.
+
+## A — Actuators
+
+Imagine a robot has wheels and arms.
+
+It uses its wheels and arms to perform actions.
+
+Those are its actuators.
+
+For our project, the system's actions include:
+
+- Producing a Real/Fake prediction.
+- Displaying an explanation.
+- Displaying results and information through the interface.
+
+Because this is a software system, these are software outputs rather than physical motors.
+
+## S — Sensors
+
+Imagine a robot has cameras and microphones.
+
+It uses them to receive information from its surroundings.
+
+For our system, the input mechanisms are:
+
+- The headline text entered by the user.
+- The labelled data read from the dataset.
+
+These act as our information inputs.
+
+## Our Project's PEAS
+
+| PEAS        | Our system                                    |
+| ----------- | --------------------------------------------- |
+| Performance | Accuracy, precision, recall, F1               |
+| Environment | Headline dataset and user-submitted headline  |
+| Actuators   | Prediction, explanation and displayed results |
+| Sensors     | Dataset reader and headline text input        |
+
+### Why does the teacher require PEAS?
+
+Because an AI project should have a clearly described problem.
+
+We need to show what the system receives, what it does and how we measure whether it succeeds.
+
+AI.txt
+
+# 19. Environment classification — What kind of world does our AI work in?
+
+This is another requirement from your AI course.
+
+Imagine different robots working in different places.
+
+- One robot works in a changing traffic environment.
+- Another works in a fixed classroom.
+- One robot works alone.
+- Another works with other robots.
+
+We describe these environments using certain properties.
+
+For our headline detector, we can classify its prediction environment like this:
+
+| Property      | Simple meaning                                          | Our project                                                        |
+| ------------- | ------------------------------------------------------- | ------------------------------------------------------------------ |
+| Observable    | Can the system see the information it needs?            | Fully observable for the submitted headline: its text is available |
+| Deterministic | Does the same action produce the same result?           | Deterministic during prediction with a fixed model and settings    |
+| Static        | Does the situation change while the system is deciding? | Static: the submitted headline does not change during prediction   |
+| Discrete      | Are the possible outcomes separate categories?          | Discrete: Likely Real or Likely Fake                               |
+| Single-agent  | Is one intelligent agent making the decision?           | Single-agent: our classifier works without competing agents        |
+
+### Let's understand these words in ordinary language.
+
+Fully observable: Imagine you are solving a puzzle and can see every piece. You have all the information available for that task.
+
+In our case, the model receives the complete headline text.
+
+However, this does not mean it knows the actual truth behind the headline. It only sees the information provided to it.
+
+Deterministic: Imagine pressing a calculator's `2 + 2` button. With the same settings, you get the same answer.
+
+Similarly, a fixed trained classifier given the same headline should produce the same prediction.
+
+Static: Imagine a photograph. It does not change while you look at it.
+
+Our submitted headline remains unchanged while the classifier processes it.
+
+Discrete: Imagine a traffic light. Its possible states are separate: Red, Yellow and Green.
+
+Our prediction has two separate categories: Real and Fake.
+
+Single-agent: Imagine one student solving an individual examination rather than playing a game against another student.
+
+Our classifier makes its prediction without competing against another intelligent agent.
+
+These classifications describe the prediction task, not the entire internet or the truthfulness of every news story.
+
+# 20. Agent type — What kind of intelligent system are we building?
+
+In AI, an agent is something that observes information and takes action based on it.
+
+Imagine a robot vacuum cleaner:
+
+- It observes whether the floor is dirty.
+- It decides what to do.
+- It moves and cleans.
+
+Our headline detector also receives information and produces an action.
+
+But what type of agent is it?
+
+For this project, we can describe it as a learning agent.
+
+### What is a learning agent?
+
+Imagine a child who learns how to recognise different animals.
+
+At first, the child knows very little.
+
+You show the child many pictures:
+
+- Cats.
+- Dogs.
+- Birds.
+- Horses.
+
+Gradually, the child learns patterns and becomes better at recognising new animals.
+
+A learning agent improves its behaviour or decisions using experience or data.
+
+Simplest definition: A learning agent is an intelligent system that learns from experience or data to make better decisions.
+
+### How does our project fit?
+
+1. We provide labelled headlines.
+2. The models learn patterns from them.
+3. The trained models receive new headlines.
+4. They produce predictions using what they learned.
+
+One distinction is important: training is the learning stage; when a user submits a headline, the already-trained model normally performs prediction rather than learning from that new headline.
+
+We should explain that distinction in the report and viva.
+
+# 21. Reproducible experiments — Why do we need a fixed random seed?
+
+Imagine you throw a dice today and get 4.
+
+Tomorrow you throw it again and get 2.
+
+The result changes because dice rolls involve randomness.
+
+Some machine-learning operations also involve random choices.
+
+For example:
+
+- Which examples go into the training set.
+- Which examples go into the testing set.
+- Where K-means initially places its cluster centres.
+
+If we run the experiment again, we may get different results.
+
+That makes comparisons difficult.
+
+### What is a random seed?
+
+A random seed is like setting a starting point for a random-number generator.
+
+If we use the same seed and the same settings, we can reproduce many random operations.
+
+Simplest definition: A random seed helps us repeat an experiment with the same random starting conditions.
+
+For example:
+
+```
+random_state=42
+```
+
+The number 42 is just an example. We can choose another fixed number.
+
+### Why do we need it?
+
+Imagine we run our project today:
+
+- Naive Bayes accuracy: 85%.
+- Logistic Regression accuracy: 90%.
+
+Tomorrow we run it again with a different random split:
+
+- Naive Bayes accuracy: 82%.
+- Logistic Regression accuracy: 87%.
+
+Which results should we put in our report?
+
+Using fixed random seeds makes our experiment more consistent and allows us to reproduce the reported results.
+
+For our project, we should set the random state wherever the relevant library supports it, including the data split and K-means initialisation. We should also seed Python's `random` module as the general guidelines explicitly request.
+
+Important: A seed does not guarantee identical results across every computer, software version or hardware configuration. We should also record our software versions and experiment settings.
+
+# 22. Charts — Why does the teacher require at least three?
+
+Imagine I tell you:
+
+"Our model is good."
+
+You might ask:
+
+"Can you prove it?"
+
+A chart helps us present information visually.
+
+Instead of explaining hundreds of numbers, we can show patterns through graphs.
+
+Our teacher requires at least three properly labelled charts.
+
+We can use:
+
+[AI-based disease category prediction model using symptoms from low-resource Ethiopian language: Afaan Oromo text | Scientific Reports](https://images.openai.com/static-rsc-4/ErokGTEyLZxI7rBFJV-W1B2L_VHdt6L-x4hsWPbdItwHnUp5MCgdWdPjOgpAmBaEQC5DhLTjikR5Vwwqvi3ystBW5EOCeeOCrRVdUS4Ko14fiaKMbNmEZtnpmOHNHz6BdieOF56xLVJhvptUnJcexff1KUgMIBL_t3T-gbnQ7FI?purpose=inline)
+
+Chart 1 — Model comparison
+
+Shows Naive Bayes and Logistic Regression performance using accuracy, precision, recall and F1.
+
+[Evaluation Metrics for Classification | by Python Programmer | Medium](https://images.openai.com/static-rsc-4/DLLkUusk8jZpMpMQt-5Z-qpDU_oKG5tRWXpZcwKviRgcQ79JCjs1lYwJjOoBjCr6nr1vEWBcgNOhki_QgRdmHMe5wckuldITdB_LsCPGL840R2__o097E8d1gcLKVQgUVq2fEDcyqf15UcFvpyh0yOjYHDGhOagKwMgf_M30s14?purpose=inline)
+
+Chart 2 — Confusion matrices
+
+Shows the correct and incorrect predictions of our models.
+
+[Misinformation Analysis Using Fake News Trends and Modelling | Devpost](https://images.openai.com/static-rsc-4/Fq2N59CsE8kfEPRja4lHwNVhmXuEDLqFHAm4g7Xvx4TdtyQ3vlaruoReudr1DJ1gdfebkVCii04p-XCvFzCXQMHJMkjk68jLivHeoXzUvJnOL1psjG4-zspgrGJyfJjjyDZd9s3Zf8N9ADadbhNVX8UHSu3JCd-v9wICKDFhcRU?purpose=inline)
+
+Chart 3 — Common headline words
+
+Shows which words appear most frequently in our dataset.
+
+[K-Means Clustering](https://images.openai.com/static-rsc-4/_8H_m5pi7hSJprYJGXGbDcn0b8IZvEmhAZ_apqzcSPLdWzQd97s5KIqe9HFgTupWAHswgz3ZoDA4LVMQ4c7xlV3dv3o07HURoFaWn4JzTvs9GBHwzUZ4hoUUKEql2AiGeRrgq-4Lc0hBDMZpS07EGhpyD3hzvpkr9TPZgiBaqyQ?purpose=inline)
+
+Optional Chart 4 — K-means clusters
+
+Helps visualise groups of similar headlines.
+
+### What makes a chart properly labelled?
+
+A chart should have:
+
+- A meaningful title.
+- An X-axis label.
+- A Y-axis label.
+- A legend when multiple things are compared.
+- Correct values taken from our actual experiments.
+
+For example, a chart titled "Model Comparison" is not enough if the reader cannot understand what its axes represent.
+
+### What is Matplotlib?
+
+Matplotlib is a Python library used to create graphs and charts.
+
+Think of it as a tool that lets Python draw visual reports from our data.
+
+We will use it for our charts.
+
+# 23. Modular programming — Why do we need separate Python files?
+
+Imagine you have a school bag containing:
+
+- Mathematics books.
+- English books.
+- Science books.
+- Notebooks.
+
+Would you throw everything into one giant notebook without separating anything?
+
+Probably not. It would become difficult to find things.
+
+We organise our Python project in a similar way.
+
+Simplest definition: Modular programming means dividing a large program into smaller files or sections, where each part has a specific responsibility.
+
+For example:
+
+| File               | Its responsibility                            |
+| ------------------ | --------------------------------------------- |
+| `data_loader.py`   | Loads the dataset                             |
+| `preprocessing.py` | Cleans headlines and prepares text            |
+| `models.py`        | Trains and uses our two classification models |
+| `clustering.py`    | Performs K-means clustering                   |
+| `evaluation.py`    | Calculates performance metrics                |
+| `app.py`           | Runs the Streamlit application                |
+
+Why?
+
+Because if something goes wrong with K-means, we can inspect the clustering module instead of searching through one enormous Python file.
+
+It also makes it easier for two students to divide their work.
+
+# 24. Docstrings — What are they?
+
+Imagine you open a machine and see 20 buttons.
+
+You don't know what each button does.
+
+So the manufacturer provides a small description explaining each button.
+
+A docstring does something similar for Python functions and classes.
+
+Simplest definition: A docstring is a description written inside Python code to explain what a function, class or module does.
+
+Example:
+
+```
+def clean_headline(headline):    """Remove unnecessary spaces and prepare a headline."""    return headline.strip().lower()
+```
+
+The text inside the triple quotation marks explains the function.
+
+Why do we need it?
+
+- To understand code more easily.
+- To help our teammate understand our functions.
+- To make our project look organised and professional.
+- To satisfy the code-quality requirement.
+
+Your teacher expects docstrings throughout the project.
+
+# 25. Exception handling — What if something goes wrong?
+
+Imagine you are using a washing machine.
+
+What happens if you forget to close its door?
+
+A good washing machine should not simply break. It should display an error message telling you what went wrong.
+
+Our Python application needs similar protection.
+
+Imagine a user submits an empty headline.
+
+Our program should not crash. It should display:
+
+"Please enter a headline."
+
+Other possible problems include:
+
+- The dataset file is missing.
+- The dataset has the wrong column names.
+- The user submits invalid input.
+- The application cannot load a trained model.
+
+This is where exception handling helps.
+
+Simplest definition: Exception handling allows a program to deal with errors without unexpectedly crashing.
+
+In Python, we use `try` and `except`.
+
+For example:
+
+```
+try:    data = pd.read_csv("data/news.csv")except FileNotFoundError:    print("Dataset file was not found.")
+```
+
+### What does "specific except blocks" mean?
+
+Imagine a hospital receptionist who says:
+
+"Something went wrong."
+
+That is not very helpful.
+
+It is better to say:
+
+"The patient's appointment record was not found."
+
+Similarly, our program should catch the particular errors we expect rather than using one general error handler for everything.
+
+Your teacher specifically says not to use a bare `except`.
+
+# 26. What are limitations and ethical considerations?
+
+Imagine you build a machine that predicts whether fruit is ripe.
+
+But your machine learned from only 100 apples.
+
+Would you confidently use it to judge every fruit in the world?
+
+No!
+
+It may work well for apples but badly for mangoes.
+
+Our fake-news detector has similar limitations.
+
+### Limitations
+
+A limitation is something our system cannot do perfectly or reliably.
+
+For example:
+
+1. Dataset limitation: If our dataset contains poor-quality labels, the model may learn incorrect patterns.
+2. Bias: If most examples come from certain sources, the model may perform poorly on headlines from other sources.
+3. Changing news: Language and news topics change over time.
+4. Misleading headlines: A headline may sound unusual but still describe a real event.
+5. Limited understanding: Our models examine text patterns. They do not independently investigate the event or verify its facts.
+
+### Ethical considerations
+
+Ethics means thinking about whether our system is being used responsibly and fairly.
+
+Imagine our detector labels a genuine news headline as fake.
+
+Someone shares that prediction and damages the reputation of a news organisation.
+
+That could be harmful.
+
+So we must:
+
+- Avoid claiming that our model is a perfect fact-checker.
+- Display predictions as likely real or likely fake.
+- Explain that predictions are based on learned dataset patterns.
+- Avoid presenting model accuracy as proof of truth.
+- Discuss possible bias and incorrect predictions.
+
+The main lesson: Our AI helps analyse headlines. It does not replace human fact-checking.
+
+# 27. What do GitHub, README and requirements.txt mean?
+
+These are not AI algorithms. They are part of delivering a complete software project.
+
+### GitHub
+
+Imagine you and your teammate are writing a book together.
+
+You both make changes, and you want a record of:
+
+- Who wrote which section.
+- What was changed.
+- When it was changed.
+- How to return to an earlier version if something breaks.
+
+GitHub helps us manage and share our project code.
+
+Your teacher specifically requires both team members to make commits using their own GitHub accounts.
+
+A commit is a saved record of a particular change to the project.
+
+For example:
+
+- Student 1 commits the data-cleaning module.
+- Student 2 commits the Streamlit interface.
+
+This helps demonstrate each student's actual contribution.
+
+### README.md
+
+Imagine you buy a new toy, but there is no instruction manual.
+
+You don't know how to assemble or operate it.
+
+A README is the instruction manual for our project.
+
+It should explain:
+
+- What the project does.
+- Who developed it.
+- What is needed to install it.
+- How to run it.
+- How to reproduce the experiments.
+- Where the dataset came from.
+- What limitations the project has.
+
+### requirements.txt
+
+Imagine you give your friend a recipe but forget to mention the ingredients.
+
+Your friend cannot prepare the dish correctly.
+
+`requirements.txt` is like an ingredient list for our Python application.
+
+It records the Python packages needed to run our project.
+
+For example, our project will use:
+
+- Pandas.
+- scikit-learn.
+- Matplotlib.
+- Streamlit.
+
+We will record the dependency versions so that someone else can install compatible packages.
+
+### What is a fresh clone?
+
+Imagine you have finished building a toy in your house.
+
+Now you give someone the instructions and all the required pieces so they can build it in their own house.
+
+A fresh clone means downloading a clean copy of our GitHub repository into another folder or computer and trying to run it from there.
+
+Why?
+
+Because our project should not work only on the computer where we originally developed it.
+
+Your teacher expects the project to run by following the README instructions.
+
+# 28. Which libraries are we allowed to use?
+
+A library is a collection of ready-made programming tools that we can use instead of writing everything ourselves.
+
+Think of building a house.
+
+You do not manufacture every brick, hammer and screwdriver yourself. You use existing tools to build something useful.
+
+Our project uses these libraries:
+
+| Library      | Simple purpose                                       |
+| ------------ | ---------------------------------------------------- |
+| Pandas       | Work with tables and datasets                        |
+| scikit-learn | Train machine-learning models and perform clustering |
+| Matplotlib   | Draw charts                                          |
+| Streamlit    | Build the web interface                              |
+
+An important course rule:
+
+The guidelines say that established libraries such as scikit-learn are allowed for the Labs 09–11 techniques, provided you can explain the parameters you pass and the numbers they return.
+
+They also say algorithms from Labs 04–08 must be your own implementations. Our selected project's machine-learning techniques fall under Lab 11, so using scikit-learn for Naive Bayes, Logistic Regression and K-means is permitted.&#x20;
+
+AI.txt
+
+AI.txt
+
+
+
+The guidelines also exclude:
+
+- TensorFlow.
+- PyTorch.
+- Keras.
+- Paid APIs.
+- Deployment.
+
+We do not need any of these for Project 19.
+
+# 29. What exactly must we submit?
+
+Your teacher does not want only a Python file.
+
+There are three major submission components.
+
+## Our final submission
+
+1 mark
+
+Project Proposal
+
+A 3–4 page document explaining what we intend to build, why, which techniques we will use, what data we need, how we will evaluate the system and how we will divide the work.
+
+2 marks
+
+Project Report
+
+An 8–10 page document explaining what we actually built, how it works, our experiments, actual results, testing, limitations and individual contributions.
+
+7 marks
+
+Working Project + Individual Viva
+
+A working application, complete source code and dependencies, plus an oral examination where each student explains their own work and understanding.
+
+Both the proposal and report must be provided in two formats:
+
+- PDF.
+- Markdown (`.md`).
+
+That means four documents in total inside the `docs` folder.
+
+The complete source code should be in a public, properly organised GitHub repository.&#x20;
+
+AI.txt
+
+
+
+## How are the seven project and viva marks divided?
+
+| Assessment                           | Marks |
+| ------------------------------------ | ----- |
+| Software runs from a clean clone     | 1.5   |
+| Correct AI implementation            | 2     |
+| Experiments, comparison and analysis | 1     |
+| Code quality                         | 0.5   |
+| Individual viva                      | 2     |
+| Total                                | 7     |
+
+This is important: the teacher evaluates students individually, even though you work as a team.
+
+During the viva, you may be asked to open your code, explain a function, trace an algorithm, justify a parameter and interpret a number in your results table.
+
+
+
+AI.txt
+
+AI.txt
+
+
+
+# 30. Put everything together: Our complete project in one picture
+
+Now you know the individual concepts. Let's connect them.
+
+## Complete Fake News Headline Detector workflow
+
+Public labelled news dataset
+
+Headlines + Real/Fake labels
+
+EDA and data cleaning
+
+Understand the dataset, inspect words, sources and headline lengths
+
+Train/test split
+
+Separate learning examples from examination examples
+
+TF-IDF
+
+Convert headline words into numerical features
+
+Naive Bayes
+
+Model 1
+
+Logistic Regression
+
+Model 2
+
+Evaluation and comparison
+
+Accuracy, precision, recall, F1 and confusion matrices
+
+Influential words
+
+Explain predictions
+
+K-means
+
+Group similar headlines
+
+Streamlit web application
+
+User enters headline → sees prediction and explanation
+
+Alongside this workflow, we build the project using OOP, describe it using PEAS, classify its environment, use fixed seeds, create charts, write documentation and test the application.
+
+# 31. The most important distinction: What is the actual AI work, and what supports it?
+
+I want you to remember this table because it will make the whole project much easier to understand.
+
+| Part                       | Its job in our project                    |
+| -------------------------- | ----------------------------------------- |
+| Dataset                    | Gives the computer examples to learn from |
+| EDA                        | Helps us understand the examples          |
+| Preprocessing              | Cleans the text                           |
+| TF-IDF                     | Converts words into numbers               |
+| Naive Bayes                | Learns patterns using probability         |
+| Logistic Regression        | Learns patterns using numerical weights   |
+| Train/test split           | Separates learning from fair testing      |
+| Evaluation metrics         | Measure how well models perform           |
+| Confusion matrix           | Shows exactly what mistakes models make   |
+| Influential words          | Explain which words affected predictions  |
+| K-means                    | Groups similar headlines by topic         |
+| Streamlit                  | Lets people interact with our system      |
+| OOP                        | Organises our Python code                 |
+| PEAS                       | Describes the AI problem                  |
+| Environment classification | Describes the type of environment         |
+| Random seed                | Helps repeat experiments                  |
+| Charts                     | Show results visually                     |
+| GitHub                     | Stores and tracks our teamwork            |
+| README                     | Explains how to use the project           |
+| requirements.txt           | Lists the required Python packages        |
+| Proposal and report        | Explain our planned and completed work    |
+| Viva                       | Demonstrates our individual understanding |
+
+## 32. What I want you to remember before writing any code
+
+There are three major goals behind this entire project:
+
+# 1. Build
+
+We must create a working application that predicts whether a headline is likely real or likely fake.
+
+# 2. Prove
+
+We must demonstrate that our AI techniques work through fair experiments, model comparisons, metrics and charts.
+
+# 3. Explain
+
+We must understand the code, design, results and limitations well enough to explain them individually during the viva
