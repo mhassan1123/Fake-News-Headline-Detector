@@ -1,0 +1,37 @@
+CLEANED V2 DATASET SPLITTING
+============================================================
+Total records: 82823
+Random state: 42
+Split ratio: 64% training, 16% validation, 20% testing
+
+SPLIT DISTRIBUTION
+------------------------------------------------------------
+Training
+Records: 53006
+Fake: 20740 (39.13%)
+Real: 32266 (60.87%)
+
+Validation
+Records: 13252
+Fake: 5185 (39.13%)
+Real: 8067 (60.87%)
+
+Testing
+Records: 16565
+Fake: 6482 (39.13%)
+Real: 10083 (60.87%)
+
+QUALITY CHECKS
+------------------------------------------------------------
+Input duplicate headlines: 0
+Missing headlines: 0
+Missing labels: 0
+Invalid labels: 0
+Normalized overlap between splits: 0
+Total assigned records: 82823
+
+OUTPUT FILES
+------------------------------------------------------------
+D:\AI_Project\Fake-News-Headline-Detector\data\splits_cleaned_v2\train.csv
+D:\AI_Project\Fake-News-Headline-Detector\data\splits_cleaned_v2\validation.csv
+D:\AI_Project\Fake-News-Headline-Detector\data\splits_cleaned_v2\test.csv

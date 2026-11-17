@@ -1,0 +1,28 @@
+{
+    "dataset": "final_headlines_cleaned_v2",
+    "model": "Logistic Regression",
+    "C": 2.0,
+    "class_weight": "None",
+    "threshold": 0.477,
+    "tfidf_features": 10000,
+    "validation_records": 13252,
+    "accuracy": 0.8283277995774223,
+    "fake_precision": 0.7948925820835022,
+    "fake_recall": 0.7564127290260366,
+    "real_precision": 0.8481606155325799,
+    "real_recall": 0.8745506384033718,
+    "macro_precision": 0.8215265988080411,
+    "macro_recall": 0.8154816837147042,
+    "macro_f1": 0.8181644533198061,
+    "roc_auc": 0.9008445063337078,
+    "fake_recall_target": 0.8,
+    "real_recall_target": 0.97,
+    "fake_recall_target_met": false,
+    "real_recall_target_met": false,
+    "both_targets_met": false,
+    "test_data_used": false,
+    "label_mapping": {
+        "0": "Fake",
+        "1": "Real"
+    }
+}
