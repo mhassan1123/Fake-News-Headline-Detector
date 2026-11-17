@@ -1,0 +1,24 @@
+﻿# Python cache
+__pycache__/
+*.py[cod]
+# Virtual environments and secrets
+.venv/
+venv/
+.env
+# Raw datasets
+data/raw/
+# Intermediate processed datasets
+data/processed/*
+!data/processed/final_headlines_cleaned_v2.csv
+# Old dataset splits
+data/splits/
+# Historical experiment outputs
+outputs/*
+# Keep cleaned-v2 results
+!outputs/cleaned_v2/
+# Exclude unfinished LSA experiment
+outputs/cleaned_v2/clustering_lsa/
+# Exclude regenerable TF-IDF matrices
+outputs/cleaned_v2/tfidf/*.npz
+# Jupyter temporary files
+.ipynb_checkpoints/
