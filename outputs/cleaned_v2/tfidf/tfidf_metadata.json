@@ -1,0 +1,20 @@
+{
+    "dataset": "final_headlines_cleaned_v2.csv",
+    "training_records": 53006,
+    "validation_records": 13252,
+    "test_records": 16565,
+    "max_features": 10000,
+    "actual_features": 10000,
+    "ngram_range": [
+        1,
+        2
+    ],
+    "min_df": 2,
+    "max_df": 0.95,
+    "vectorizer_fitted_on": "training_only",
+    "zero_feature_rows": {
+        "training": 20,
+        "validation": 7,
+        "test": 2
+    }
+}

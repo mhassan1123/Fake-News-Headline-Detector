@@ -1,0 +1,17 @@
+{
+    "Model": "Logistic Regression",
+    "C": 2.0,
+    "Threshold": 0.477,
+    "Test Records": 16565,
+    "Accuracy": 0.8249924539692122,
+    "Fake Precision": 0.7928723230341671,
+    "Fake Recall": 0.7482258562172169,
+    "Fake F1": 0.7699023732042226,
+    "Real Precision": 0.8437978560490046,
+    "Real Recall": 0.8743429534860656,
+    "Real F1": 0.8587988894841946,
+    "Macro Precision": 0.8183350895415858,
+    "Macro Recall": 0.8112844048516412,
+    "Macro F1": 0.8143506313442086,
+    "ROC-AUC": 0.8971501823357341
+}
