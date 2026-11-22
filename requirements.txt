@@ -4,3 +4,4 @@ scikit-learn
 scipy
 joblib
 matplotlib
+streamlit==1.67.0
