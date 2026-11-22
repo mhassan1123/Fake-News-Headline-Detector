@@ -1,197 +1,215 @@
-Fake News Headline Detector
+# 📰 Fake News Headline Detector
 
-A project that analyzes news headlines using Machine Learning(ML) and classification algorithms. It compares Naive Bayes and Logistic Regression, uses TF-IDF for text representation, and applies K-means clustering to explore headline topics.
+![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-App-FF4B4B?logo=streamlit&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-F7931E?logo=scikitlearn&logoColor=white)
+![Status](https://img.shields.io/badge/Purpose-Educational-green)
 
-The project also provides an interactive Streamlit application for headline analysis, model explanations, and topic exploration.
+A machine learning project that analyzes news headlines and classifies them as **Fake**, **Real**, or **Insufficient Evidence**. It compares **Naive Bayes** and **Logistic Regression** on **TF-IDF** features, explains predictions through influential words, and uses **K-means clustering** to explore headline topics. Everything is wrapped in an interactive **Streamlit** web app.
 
-Project Features
+---
 
-Classifies headlines as Fake, Real, or Insufficient Evidence.
+## 📑 Table of Contents
 
-Uses TF-IDF to convert text into numerical features.
+- [Screenshots](#-screenshots)
+- [Features](#-features)
+- [Technologies Used](#-technologies-used)
+- [Dataset](#-dataset)
+- [Machine Learning Approach](#-machine-learning-approach)
+- [Object-Oriented Design](#-object-oriented-design)
+- [Streamlit Application](#-streamlit-application)
+- [Installation](#-installation)
+- [Project Structure](#-project-structure)
+- [Documentation and Visualizations](#-documentation-and-visualizations)
+- [Limitations](#-limitations)
+- [Authors](#-authors)
+- [License](#-license)
 
-Compares Naive Bayes and Logistic Regression classifiers.
+---
 
-Uses a selected Logistic Regression model for final predictions.
+## 🖼️ Screenshots
 
-Provides confidence scores and influential-word explanations.
+### 1. Analyze Headline
 
-Detects possible spelling issues and provides advisory suggestions without automatically changing user input.
+<img width="1897" height="905" alt="Analyze Headline page" src="https://github.com/user-attachments/assets/64af258f-b580-4648-b1ae-993153076307" />
 
-Uses K-means clustering to explore news topics.
+*Enter a headline to see the prediction, confidence score, influential words, and any warnings.*
 
-Includes an interactive Streamlit web application.
+### 2. Prediction Explanation (Influential Words)
 
-Demonstrates object-oriented programming through inheritance, encapsulation, and method overriding.
+<img width="1408" height="281" alt="Prediction explanation with influential words" src="https://github.com/user-attachments/assets/7007f16f-1a77-4781-a12a-6ed8e2bd364d" />
 
-Technologies Used
+*Words that pushed the model toward Fake or Real.*
 
-Python
+### 3. Spelling Advisory
 
-Pandas and NumPy
+<img width="561" height="259" alt="Spelling advisory message" src="https://github.com/user-attachments/assets/b4cbede6-af28-4fa3-add7-0fa79c570fc1" />
 
-Scikit-learn
+*Possible spelling issues are flagged as advice only; the user's input is never changed automatically.*
 
-SciPy
+### 4. Explore News Topics
 
-Joblib
+<img width="1674" height="856" alt="Explore News Topics page" src="https://github.com/user-attachments/assets/311c1422-f0d9-4ef0-9f8d-fdd018131de8" />
 
-Matplotlib
+*Browse K-means topic clusters and their summaries.*
 
-Streamlit
+### 5. About Project
 
-TF-IDF
+<img width="922" height="857" alt="About Project page" src="https://github.com/user-attachments/assets/89013f87-ae4d-41f8-b64b-ec79a875f47d" />
 
-Naive Bayes
+*Project information, model details, and limitations at a glance.*
 
-Logistic Regression
+### 6. Evaluation Charts
 
-K-means Clustering
+| Model Comparison (Validation) | Final Test Confusion Matrix | Cluster Distribution |
+|:---:|:---:|:---:|
+| ![Model Comparison](docs/charts/model_comparison_validation.png) | ![Confusion Matrix](docs/charts/final_test_confusion_matrix.png) | ![Cluster Distribution](docs/charts/cluster_distribution.png) |
 
-Dataset
+---
+
+## ✨ Features
+
+- Classifies headlines as **Fake**, **Real**, or **Insufficient Evidence**
+- Converts text to numerical features with **TF-IDF**
+- Compares **Naive Bayes** and **Logistic Regression** classifiers
+- Uses a selected **Logistic Regression** model for final predictions
+- Provides **confidence scores** and **influential-word explanations**
+- Detects possible spelling issues and gives advisory suggestions without modifying user input
+- Uses **K-means clustering** to explore news topics
+- Includes an interactive **Streamlit** web application
+- Demonstrates **OOP**: inheritance, encapsulation, and method overriding
+
+---
+
+## 🛠️ Technologies Used
+
+| Category | Tools |
+|---|---|
+| Language | Python |
+| Data | Pandas, NumPy, SciPy |
+| Machine Learning | Scikit-learn, Joblib |
+| Visualization | Matplotlib |
+| Web App | Streamlit |
+| Techniques | TF-IDF, Naive Bayes, Logistic Regression, K-means Clustering |
+
+---
+
+## 📊 Dataset
 
 The project uses the cleaned dataset:
 
+```
 data/processed/final_headlines_cleaned_v2.csv
+```
 
-The dataset contains 82,823 headlines.
+It contains **82,823 headlines**, divided as follows:
 
-Dataset Splits
+| Split | Number of Headlines |
+|---|---:|
+| Training | 53,006 |
+| Validation | 13,252 |
+| Testing | 16,565 |
+| **Total** | **82,823** |
 
-Split
+The training split is used for model training, the validation split for model comparison and selection, and the held-out test split for final evaluation.
 
-Number of Headlines
+---
 
-Training
+## 🧠 Machine Learning Approach
 
-53,006
+### 1. Text Representation
+**TF-IDF** (Term Frequency–Inverse Document Frequency) converts headlines into numerical feature vectors. The final classification pipeline uses **10,000 TF-IDF features**.
 
-Validation
+### 2. Classification Models
+Two algorithms were compared:
 
-13,252
+- Multinomial **Naive Bayes**
+- **Logistic Regression** *(selected as the final model)*
 
-Testing
+The final model uses a classification threshold of **0.477**.
 
-16,565
+### 3. Model Evaluation
+The selected model was evaluated on the held-out test set:
 
-Total
+| Metric | Test Result |
+|---|---:|
+| Macro F1-score | **0.8144** |
+| ROC-AUC | **0.8972** |
 
-82,823
+The test set was kept separate from model selection and threshold tuning.
 
-The training split is used for model training, validation is used for model comparison and selection, and the held-out test split is used for final evaluation.
+### 4. Topic Clustering
+**K-means** groups headlines by their text features. The app uses previously generated clustering results to display topic summaries and explore headline groups.
 
-Machine Learning Approach
+---
 
-1. Text Representation
+## 🧩 Object-Oriented Design
 
-TF-IDF (Term Frequency–Inverse Document Frequency) converts news headlines into numerical feature vectors.
+| Class | Role |
+|---|---|
+| `HeadlineEnvironment` | Handles headline input and validation |
+| `TextClassifier` | Parent class with shared classification functionality |
+| `NaiveBayesAgent` | Inherits from `TextClassifier`; implements Naive Bayes prediction |
+| `LogisticRegressionAgent` | Inherits from `TextClassifier`; implements Logistic Regression prediction |
 
-The final classification pipeline uses 10,000 TF-IDF features.
+The implementation demonstrates **encapsulation**, **inheritance**, **method overriding**, and **code reuse**.
 
-2. Classification Models
+---
 
-Two classification algorithms were compared:
+## 🖥️ Streamlit Application
 
-Multinomial Naive Bayes
+| Section | Description |
+|---|---|
+| **Analyze Headline** | Enter a headline and view its prediction, confidence, influential words, and warnings |
+| **Explore News Topics** | Explore existing K-means clusters and their summaries |
+| **About Project** | View project information, model details, and limitations |
 
-Logistic Regression
+---
 
-Logistic Regression was selected as the final classification model.
+## 🚀 Installation
 
-The final model uses a classification threshold of 0.477.
+### 1. Clone the Repository
 
-3. Model Evaluation
-
-The selected model was evaluated on the held-out test dataset.
-
-Metric
-
-Test Result
-
-Macro F1-score
-
-0.8144
-
-ROC-AUC
-
-0.8972
-
-The test dataset was kept separate from model selection and threshold tuning.
-
-4. Topic Clustering
-
-K-means clustering is used to group headlines according to their text features.
-
-The application uses previously generated clustering results to display topic summaries and explore news headline groups.
-
-Object-Oriented Design
-
-The project includes four main classes:
-
-HeadlineEnvironment: handles headline input and validation.
-
-TextClassifier: parent class containing shared classification functionality.
-
-NaiveBayesAgent: inherits from TextClassifier and implements Naive Bayes prediction.
-
-LogisticRegressionAgent: inherits from TextClassifier and implements Logistic Regression prediction.
-
-The implementation demonstrates:
-
-Encapsulation
-
-Inheritance
-
-Method overriding
-
-Code reuse
-
-Streamlit Application
-
-The project provides three main application sections:
-
-Analyze Headline: Enter a headline and view its prediction, confidence, influential words, and warnings.
-
-Explore News Topics: Explore existing K-means clusters and their summaries.
-
-About Project: View information about the project, model, and its limitations.
-
-Run the Application
-
-Start the application from the project root directory:
-
-python -m streamlit run app.py
-
-Streamlit will provide a local URL in the terminal. Open that URL in your browser.
-
-Installation
-
-1. Clone the Repository
-
+```bash
 git clone https://github.com/mhassan1123/Fake-News-Headline-Detector
 cd Fake-News-Headline-Detector
+```
 
-https://github.com/mhassan1123/Fake-News-Headline-Detector
+### 2. Create a Virtual Environment
 
-2. Create a Virtual Environment
-
+```bash
 python -m venv venv
+```
 
-Activate it on Windows PowerShell:
+Activate it:
 
+```powershell
+# Windows PowerShell
 .\venv\Scripts\Activate.ps1
+```
 
-3. Install Dependencies
+### 3. Install Dependencies
 
+```bash
 python -m pip install --upgrade pip
 pip install -r requirements.txt
+```
 
-4. Run the Application
+### 4. Run the Application
 
+From the project root directory:
+
+```bash
 python -m streamlit run app.py
+```
 
-Project Structure
+Streamlit prints a local URL in the terminal (usually `http://localhost:8501`). Open it in your browser.
 
+---
+
+## 📁 Project Structure
+
+```
 Fake-News-Headline-Detector/
 │
 ├── app.py
@@ -232,47 +250,49 @@ Fake-News-Headline-Detector/
     ├── class_diagram.md
     ├── dataset_schema.md
     └── charts/
+```
 
-The application depends on the saved model and vectorizer artifacts in outputs/cleaned_v2/. Keep the required artifacts and their directory structure intact.
+> ⚠️ The app depends on the saved model and vectorizer artifacts in `outputs/cleaned_v2/`. Keep these files and their directory structure intact.
 
-Documentation and Visualizations
+---
 
-Additional project documentation is available in the docs/ directory:
+## 📚 Documentation and Visualizations
 
-Project Report – Word Document
+Additional documentation is in the `docs/` directory:
 
-PEAS and Task Environment Classification
+- [PEAS and Task Environment Classification](docs/agent_design.md)
+- [Learning Agent Architecture](docs/learning_agent_architecture.md)
+- [UML Class Diagram and OOP Concepts](docs/class_diagram.md)
+- [Dataset Schema](docs/dataset_schema.md)
 
-Learning Agent Architecture
+Generated evaluation charts are in `docs/charts/`:
 
-UML Class Diagram and OOP Concepts
+- `model_comparison_validation.png`
+- `final_test_confusion_matrix.png`
+- `cluster_distribution.png`
 
-Dataset Schema
+---
 
-Generated evaluation charts are available in docs/charts/:
+## ⚠️ Limitations
 
-model_comparison_validation.png
+- The system analyzes **headline text only**, not the full article.
+- Predictions reflect patterns learned from the training dataset.
+- Model confidence is **not** factual certainty.
+- Misspellings, incomplete headlines, unfamiliar names, and out-of-vocabulary words may reduce reliability.
+- Spelling suggestions are advisory and never modify the original headline.
+- The app does not verify news sources or establish whether a claim is true.
 
-final_test_confusion_matrix.png
+> **Important:** This is an educational machine learning project, not a professional fact-checking service. Its predictions should not be treated as proof that a news story is true or false.
 
-cluster_distribution.png
+---
 
-Limitations
+## 👥 Authors
 
-The system analyzes headline text, not the complete news article.
+- **Muhammad Hassan** – [GitHub](https://github.com/mhassan1123)
+- **Bilal Ahmed Khan** – [GitHub](https://github.com/BilalAhmadk929)
 
-Predictions are based on patterns learned from the training dataset.
+---
 
-Model confidence is not the same as factual certainty.
+## 📄 License
 
-Misspellings, incomplete headlines, unfamiliar names, and out-of-vocabulary words may reduce prediction reliability.
-
-Spelling suggestions are advisory and do not automatically modify the original headline.
-
-The application does not independently verify news sources or establish whether a claim is factually true.
-
-Important: This project is an educational machine learning system, not a professional fact-checking service. Its predictions should not be treated as proof that a news story is true or false.
-
-License
-
-Add the appropriate license information if this project is intended for public distribution.
+This project is licensed under the MIT License. See the `LICENSE` file for details.
